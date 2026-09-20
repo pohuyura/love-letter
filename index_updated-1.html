@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff5f7">
+<title>для софии ♥</title>
+<style>
+:root{
+  --bg:#fff5f7; --card:#ffffff; --pink:#ff5f8f; --pink2:#ff86aa;
+  --dark:#35252b; --muted:#9b7d86; --line:#f1dfe5; --shadow:0 20px 55px rgba(92,38,56,.13);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--dark);background:radial-gradient(circle at 20% 10%,#fff 0 12%,transparent 35%),var(--bg)}
+body{overflow-x:hidden}
+button,input{font:inherit}
+button{border:0;cursor:pointer}
+.app{min-height:100svh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.screen{width:min(100%,760px);min-height:calc(100svh - 48px);display:none;align-items:center;justify-content:center;animation:fade .55s ease both}
+.screen.active{display:flex}
+.panel{width:100%;max-width:620px;background:rgba(255,255,255,.78);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.9);border-radius:32px;padding:32px 24px;box-shadow:var(--shadow);text-align:center}
+h1,h2,p{margin:0}
+h1{font-size:clamp(28px,7vw,48px);line-height:1.05;letter-spacing:-1.5px}
+h2{font-size:clamp(25px,6vw,38px);line-height:1.1;letter-spacing:-1px}
+.sub{margin-top:12px;color:var(--muted);font-size:15px}
+.btn{min-height:54px;padding:0 24px;border-radius:17px;background:var(--pink);color:white;font-weight:800;box-shadow:0 12px 25px rgba(255,95,143,.25);transition:.18s transform,.18s box-shadow}
+.btn:hover{transform:translateY(-2px);box-shadow:0 15px 30px rgba(255,95,143,.32)}
+.btn.secondary{background:#fff;color:var(--dark);border:1px solid var(--line);box-shadow:none}
+.btn.small{min-height:48px}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hidden{display:none!important}
+
+/* envelope */
+.envelope-wrap{height:300px;display:flex;align-items:center;justify-content:center;perspective:900px;margin-bottom:12px}
+.envelope{position:relative;width:min(76vw,330px);height:205px;cursor:pointer;filter:drop-shadow(0 18px 20px rgba(96,38,57,.14));transition:transform .2s}
+.envelope:hover{transform:translateY(-4px) rotate(-.5deg)}
+.env-back{position:absolute;inset:0;background:#ffb1c8;border-radius:12px;overflow:hidden}
+.env-back:after{content:"";position:absolute;left:0;right:0;bottom:0;border-left:165px solid transparent;border-right:165px solid transparent;border-bottom:105px solid #ff91af}
+.env-letter{position:absolute;left:11%;right:11%;bottom:7%;height:74%;background:#fff;border-radius:8px;box-shadow:0 5px 18px rgba(0,0,0,.07);transition:transform .8s cubic-bezier(.2,.85,.25,1),z-index .1s;z-index:2}
+.env-letter:before{content:"♥";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:38px;color:#ff6f98}
+.env-flap{position:absolute;left:0;right:0;top:0;height:115px;background:#ff9fba;clip-path:polygon(0 0,100% 0,50% 100%);z-index:4;transform-origin:top;transition:transform .8s cubic-bezier(.2,.85,.25,1)}
+.envelope.open .env-flap{transform:rotateX(180deg);z-index:1}
+.envelope.open .env-letter{transform:translateY(-82px);z-index:5}
+.env-front{position:absolute;inset:0;z-index:6;pointer-events:none}
+.env-front:before,.env-front:after{content:"";position:absolute;bottom:0;width:52%;height:100%;background:#ffabc2}
+.env-front:before{left:0;clip-path:polygon(0 100%,0 35%,100% 100%)}
+.env-front:after{right:0;clip-path:polygon(100% 100%,100% 35%,0 100%)}
+.tap{font-weight:800;margin-top:8px}
+
+/* choice */
+.choice-buttons{position:relative;height:160px;margin-top:28px}
+.choice-buttons .btn{position:absolute}
+#yes{left:calc(50% - 115px);top:40px}
+#no{left:calc(50% + 8px);top:40px;background:#fff;color:#7d626b;border:1px solid var(--line);box-shadow:none}
+.mini{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* hearts */
+.hearts{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.heart{position:absolute;font-size:26px;animation:float 2.2s ease-out forwards;opacity:0}
+.success-icon{font-size:72px;margin-bottom:12px;animation:pop .7s cubic-bezier(.2,1.5,.4,1) both}
+
+/* forms */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+.field{text-align:left}
+.field label{display:block;font-weight:800;font-size:14px;margin:0 0 8px 4px}
+input[type=date],input[type=time],input[type=text]{width:100%;height:54px;border-radius:16px;border:1px solid var(--line);background:#fff;padding:0 15px;color:var(--dark);outline:none}
+input:focus{border-color:#ff91af;box-shadow:0 0 0 4px rgba(255,95,143,.1)}
+.next{margin-top:22px;width:100%}
+
+/* cards */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px}
+.activity{position:relative;text-align:left;padding:18px 16px;min-height:104px;border:1px solid var(--line);border-radius:20px;background:#fff;transition:.2s}
+.activity:hover{transform:translateY(-2px)}
+.activity.selected{border-color:#ff6f98;background:#fff1f5;box-shadow:0 8px 20px rgba(255,95,143,.12)}
+.activity .emoji{font-size:27px;display:block;margin-bottom:10px}
+.activity b{font-size:15px}
+.activity span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.check{position:absolute;right:12px;top:12px;width:24px;height:24px;border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-size:13px}
+.activity.selected .check{background:var(--pink);color:#fff;border-color:var(--pink)}
+.custom{margin-top:12px}
+
+/* final */
+.cat-art{width:min(100%,390px);margin:0 auto 12px;display:block}
+.summary{margin-top:24px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;text-align:left}
+.summary-row{display:flex;justify-content:space-between;gap:15px;padding:11px 0;border-bottom:1px solid #f5e9ed;font-size:14px}
+.summary-row:last-child{border-bottom:0}
+.summary-row b{text-align:right}
+.copy{width:100%;margin-top:16px}
+.hint{font-size:13px;color:var(--muted);margin-top:15px}
+.copied{color:#28a36b!important;font-weight:800}
+
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:scale(1)}}
+@keyframes float{0%{opacity:0;transform:translateY(30px) scale(.7) rotate(0)}15%{opacity:1}100%{opacity:0;transform:translateY(-260px) scale(1.25) rotate(30deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px) rotate(-1deg)}75%{transform:translateX(5px) rotate(1deg)}}
+
+@media(max-width:560px){
+  .app{padding:12px;align-items:flex-start}
+  .screen{width:100%;padding:8px 0}
+  .panel{padding:24px 15px;border-radius:25px;min-height:0}
+  h1{font-size:34px}
+  h2{font-size:28px}
+  .sub{font-size:14px;line-height:1.45}
+  .form-grid{grid-template-columns:1fr;gap:11px}
+  .cards{grid-template-columns:1fr;gap:10px}
+  .activity{min-height:82px;padding:15px 14px}
+  .activity .emoji{display:inline-block;font-size:24px;margin:0 8px 0 0;vertical-align:middle}
+  .activity b{font-size:14px}
+  .activity span{margin-left:34px}
+  .envelope-wrap{height:245px;margin-bottom:4px}
+  .envelope{width:min(82vw,300px);height:min(51vw,184px)}
+  .env-back:after{border-left-width:41vw;border-right-width:41vw;border-bottom-width:26vw}
+  .env-letter{height:70%}
+  .env-flap{height:56%}
+  .choice-buttons{
+    height:170px;
+    margin-top:22px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  #yes,#no{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(230px,85%);
+    top:auto;
+  }
+  #yes{top:8px}
+  #no{top:72px}
+  .choice-buttons #no{transition:left .18s ease,top .18s ease}
+  input[type=date],input[type=time],input[type=text]{
+    height:52px;
+    font-size:16px;
+  }
+  .btn{width:100%;min-height:52px}
+  .row .btn{width:auto}
+  .cat-art{width:100%;max-width:340px}
+  .summary{padding:14px}
+  .summary-row{align-items:flex-start;font-size:13px}
+  .summary-row span{flex:0 0 78px}
+  .summary-row b{max-width:70%;word-break:break-word}
+}
+@media(max-width:360px){
+  .panel{padding:20px 12px}
+  h2{font-size:25px}
+  .envelope-wrap{height:215px}
+  .envelope{width:265px;height:165px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<section class="screen active" id="s1">
+  <div class="panel">
+    <div class="envelope-wrap">
+      <div class="envelope" id="envelope" aria-label="открыть конверт">
+        <div class="env-back"></div>
+        <div class="env-letter"></div>
+        <div class="env-flap"></div>
+        <div class="env-front"></div>
+      </div>
+    </div>
+    <h1>у тебя письмо ♥</h1>
+    <p class="sub tap">нажми на конверт</p>
+  </div>
+</section>
+
+<section class="screen" id="s2">
+  <div class="panel">
+    <div class="success-icon">💌</div>
+    <h2>софия, ты пойдешь со мной на свидание?</h2>
+    <p class="sub">тут, между прочим, всего два варианта ответа.</p>
+    <div class="choice-buttons" id="choiceArea">
+      <button class="btn" id="yes">да</button>
+      <button class="btn secondary" id="no">нет</button>
+    </div>
+    <div class="mini" id="noHint">кнопка «нет» почему-то очень нервничает</div>
+  </div>
+</section>
+
+<section class="screen" id="s3">
+  <div class="hearts" id="hearts"></div>
+  <div class="panel">
+    <div class="success-icon">💗</div>
+    <h2>погодь, ты реально согласилась?</h2>
+    <p class="sub">я очень этому рад)</p>
+    <div style="margin-top:28px">
+      <button class="btn" id="really">дадада</button>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="s4">
+  <div class="panel">
+    <div class="success-icon">📅</div>
+    <h2>когда ты свободна?</h2>
+    <p class="sub">выбирай дату и время, а дальше уже начнется самое интересное.</p>
+    <div class="form-grid">
+      <div class="field">
+        <label for="date">дата</label>
+        <input id="date" type="date">
+      </div>
+      <div class="field">
+        <label for="time">время</label>
+        <input id="time" type="time">
+      </div>
+    </div>
+    <button class="btn next" id="dateNext">погнали дальше</button>
+  </div>
+</section>
+
+<section class="screen" id="s5">
+  <div class="panel">
+    <div class="success-icon">✨</div>
+    <h2>что будем делать?</h2>
+    <p class="sub">можно выбрать несколько вариантов. человечество наконец-то дошло до мультивыбора.</p>
+    <div class="cards">
+      <button class="activity" data-value="пойдем на свидание (выбор за юрой)">
+        <span class="emoji">🌹</span><b>пойдем на свидание</b><span>выбор за юрой</span><i class="check">✓</i>
+      </button>
+      <button class="activity" data-value="пойдем в кино">
+        <span class="emoji">🎬</span><b>пойдем в кино</b><span>попкорн обязателен</span><i class="check">✓</i>
+      </button>
+      <button class="activity" data-value="зависнем дома">
+        <span class="emoji">🏠</span><b>зависнем дома</b><span>максимум уюта</span><i class="check">✓</i>
+      </button>
+      <button class="activity" data-value="приготовим покушать">
+        <span class="emoji">🍝</span><b>приготовим покушать</b><span>шефы на минималках</span><i class="check">✓</i>
+      </button>
+      <button class="activity" data-value="просто гуляем">
+        <span class="emoji">🌙</span><b>просто гуляем</b><span>ноги сами разберутся</span><i class="check">✓</i>
+      </button>
+      <button class="activity" data-value="свой вариант">
+        <span class="emoji">💭</span><b>свой вариант</b><span>человеческая фантазия</span><i class="check">✓</i>
+      </button>
+    </div>
+    <div class="custom hidden" id="customWrap">
+      <input type="text" id="customActivity" placeholder="напиши свой вариант">
+    </div>
+    <button class="btn next" id="finish">готово ♥</button>
+  </div>
+</section>
+
+<section class="screen" id="s6">
+  <div class="panel">
+    <svg class="cat-art" viewBox="0 0 600 420" role="img" aria-label="влюбленные котики">
+      <defs>
+        <linearGradient id="bg" x1="0" x2="1">
+          <stop offset="0" stop-color="#ffe2eb"/><stop offset="1" stop-color="#fff3f7"/>
+        </linearGradient>
+      </defs>
+      <rect x="18" y="18" width="564" height="384" rx="42" fill="url(#bg)"/>
+      <path d="M118 292c-24-54-11-112 28-139l-8-70 57 39c39-15 77-8 104 13 27-21 65-28 104-13l57-39-8 70c39 27 52 85 28 139-27 60-88 88-150 55-18-10-33-24-43-41-10 17-25 31-43 41-62 33-123 5-150-55z" fill="#fff"/>
+      <path d="M138 153l-7-49 40 28M462 153l7-49-40 28" fill="#ff9fba" stroke="#5c3d46" stroke-width="7" stroke-linejoin="round"/>
+      <ellipse cx="215" cy="238" rx="14" ry="19" fill="#3d2d32"/><ellipse cx="385" cy="238" rx="14" ry="19" fill="#3d2d32"/>
+      <path d="M270 264c10 12 50 12 60 0" fill="none" stroke="#5c3d46" stroke-width="7" stroke-linecap="round"/>
+      <path d="M300 272c-10 26-29 35-50 29M300 272c10 26 29 35 50 29" fill="none" stroke="#ff6f98" stroke-width="7" stroke-linecap="round"/>
+      <path d="M244 251c-21 4-38 13-54 28M356 251c21 4 38 13 54 28" stroke="#5c3d46" stroke-width="5" stroke-linecap="round"/>
+      <path d="M215 201c12-18 39-20 49 4-13 23-35 37-49 46-14-9-36-23-49-46 10-24 37-22 49-4z" fill="#ff5f8f"/>
+      <path d="M385 201c12-18 39-20 49 4-13 23-35 37-49 46-14-9-36-23-49-46 10-24 37-22 49-4z" fill="#ff5f8f"/>
+      <circle cx="118" cy="119" r="8" fill="#ff86aa"/><circle cx="482" cy="119" r="8" fill="#ff86aa"/>
+      <path d="M101 79l8 16 17 2-12 12 3 17-16-8-16 8 3-17-12-12 17-2z" fill="#ffb1c8"/>
+      <path d="M499 79l8 16 17 2-12 12 3 17-16-8-16 8 3-17-12-12 17-2z" fill="#ffb1c8"/>
+    </svg>
+
+    <h2>рад, что ты не отказалась ♥</h2>
+    <p class="sub">будешь готова <b id="finalDate">...</b> в <b id="finalTime">...</b>, я заеду за тобой</p>
+
+    <div class="summary">
+      <div class="summary-row"><span>дата</span><b id="sumDate">-</b></div>
+      <div class="summary-row"><span>время</span><b id="sumTime">-</b></div>
+      <div class="summary-row"><span>что делаем</span><b id="sumActivity">-</b></div>
+    </div>
+
+    <button class="btn copy" id="copy">отправить</button>
+    <p class="hint" id="copyHint">не забудь сделать скриншот и отправь юре в тг ♥️</p>
+  </div>
+</section>
+
+<section class="screen" id="s7">
+  <div class="panel">
+    <div class="success-icon">📸</div>
+    <h2>не забудь отправить юре скриншот твоего выбора</h2>
+    <p class="sub">сделай скриншот предыдущего шага и отправь его юре в тг ♥️</p>
+    <div class="row" style="margin-top:28px">
+      <button class="btn secondary" id="backToFinal">назад</button>
+      <button class="btn" id="toConfession">далее</button>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="s8">
+  <div class="panel">
+    <div class="success-icon">💗</div>
+    <h2>софа, ты мне тоже нравишься давно, прости что раньше об этом не говорил((</h2>
+    <div style="margin-top:28px">
+      <button class="btn" id="restart">вернуться в начало</button>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const screens = [...document.querySelectorAll('.screen')];
+
+function go(id){
+  screens.forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+$('#envelope').addEventListener('click', () => {
+  $('#envelope').classList.add('open');
+  setTimeout(() => go('#s2'), 900);
+});
+
+let noClicks = 0;
+let noEscapes = 0;
+const no = $('#no');
+const area = $('#choiceArea');
+
+function moveNo(){
+  noClicks++;
+  if(noClicks >= 5) no.textContent = 'ты чё ахуела?)';
+  const maxX = Math.max(10, area.clientWidth - no.offsetWidth - 10);
+  const maxY = Math.max(10, area.clientHeight - no.offsetHeight - 10);
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+  no.style.transform = 'none';
+  no.style.left = x + 'px';
+  no.style.top = y + 'px';
+  no.style.animation = 'shake .25s ease';
+  setTimeout(()=>no.style.animation='',250);
+}
+no.addEventListener('mouseenter', moveNo);
+no.addEventListener('touchstart', e => { e.preventDefault(); moveNo(); }, {passive:false});
+no.addEventListener('click', moveNo);
+
+$('#yes').addEventListener('click', () => {
+  makeHearts();
+  setTimeout(() => go('#s3'), 250);
+});
+$('#really').addEventListener('click', () => go('#s4'));
+
+function makeHearts(){
+  const box = $('#hearts');
+  for(let i=0;i<34;i++){
+    const h=document.createElement('div');
+    h.className='heart';
+    h.textContent=['♥','♡','💗','💖'][Math.floor(Math.random()*4)];
+    h.style.left=(Math.random()*100)+'%';
+    h.style.top=(55+Math.random()*35)+'%';
+    h.style.animationDelay=(Math.random()*.8)+'s';
+    h.style.fontSize=(18+Math.random()*22)+'px';
+    box.appendChild(h);
+    setTimeout(()=>h.remove(),2600);
+  }
+}
+
+const today = new Date();
+$('#date').min = today.toISOString().split('T')[0];
+
+$('#dateNext').addEventListener('click',()=>{
+  if(!$('#date').value || !$('#time').value){
+    const fields=[$('#date'),$('#time')];
+    fields.forEach(x=>x.style.animation='shake .25s ease');
+    setTimeout(()=>fields.forEach(x=>x.style.animation=''),250);
+    return;
+  }
+  go('#s5');
+});
+
+let activities=[];
+document.querySelectorAll('.activity').forEach(card=>{
+  card.addEventListener('click',()=>{
+    const value=card.dataset.value;
+    card.classList.toggle('selected');
+    if(card.classList.contains('selected')) activities.push(value);
+    else activities=activities.filter(x=>x!==value);
+    $('#customWrap').classList.toggle('hidden', !activities.includes('свой вариант'));
+  });
+});
+
+$('#finish').addEventListener('click',()=>{
+  let chosen=[...activities];
+  if(chosen.includes('свой вариант')){
+    const custom=$('#customActivity').value.trim();
+    chosen=chosen.filter(x=>x!=='свой вариант');
+    if(custom) chosen.push(custom);
+  }
+  if(!chosen.length){
+    $('#finish').textContent='выбери хотя бы один вариант ♥';
+    setTimeout(()=>$('#finish').textContent='готово ♥',1300);
+    return;
+  }
+  const d=new Date($('#date').value+'T00:00:00');
+  const dateText=d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
+  const timeText=$('#time').value;
+  $('#finalDate').textContent=dateText;
+  $('#finalTime').textContent=timeText;
+  $('#sumDate').textContent=dateText;
+  $('#sumTime').textContent=timeText;
+  $('#sumActivity').textContent=chosen.join(', ');
+  window.finalData={date:dateText,time:timeText,activity:chosen.join(', ')};
+  go('#s6');
+});
+
+$('#copy').addEventListener('click',()=>{
+  go('#s7');
+});
+
+$('#backToFinal').addEventListener('click',()=>{
+  go('#s6');
+});
+
+$('#toConfession').addEventListener('click',()=>{
+  go('#s8');
+});
+
+$('#restart').addEventListener('click',()=>{
+  go('#s1');
+});
+</script>
+</body>
+</html>
